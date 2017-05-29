@@ -24,7 +24,7 @@ $ npm start
 
 ## Team
 
-| [![Samuel Attard](https://s.gravatar.com/avatar/1576c987b53868acf73d6ccb08110a78?s=144)](https://sindresorhus.com) |
+| [![Samuel Attard](https://s.gravatar.com/avatar/1576c987b53868acf73d6ccb08110a78?s=144)](https://samuelattard.com) |
 |---|
 | [Samuel Attard](https://samuelattard.com) |
 
