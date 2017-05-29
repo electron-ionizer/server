@@ -1,0 +1,39 @@
+{
+  "name": "ionized-server",
+  "version": "0.0.1",
+  "description": "Server for the ionized plugin manager",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && cross-env DEBUG=ionized* npm start",
+    "start": "node lib/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon --watch src --exec \"npm run dev\" -e ts"
+  },
+  "author": "Samuel Attard",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "debug": "^2.6.8",
+    "express": "^4.15.3",
+    "express-fileupload": "^0.1.3",
+    "fs-extra": "^3.0.1",
+    "mongoose": "^4.10.3",
+    "node-rsa": "^0.4.2",
+    "pify": "^3.0.0",
+    "semver": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.16.3",
+    "@types/debug": "0.0.29",
+    "@types/express": "^4.0.35",
+    "@types/fs-extra": "^3.0.2",
+    "@types/mongoose": "^4.7.13",
+    "@types/node": "^7.0.22",
+    "@types/pify": "0.0.28",
+    "@types/semver": "^5.3.31",
+    "cross-env": "^5.0.0",
+    "nodemon": "^1.11.0",
+    "typescript": "^2.3.3"
+  }
+}

@@ -1,0 +1,5 @@
+lib
+node_modules
+.filestore
+npm-debug.log*
+config.js
