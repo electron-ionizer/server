@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "npm run build && cross-env DEBUG=ionized* npm start",
+    "dev": "npm run build && cross-env DEBUG=ionizer* npm start",
     "start": "node lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon --watch src --exec \"npm run dev\" -e ts"

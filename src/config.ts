@@ -2,7 +2,7 @@ import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import * as NodeRsa from 'node-rsa';
 
-const d = debug('ionized:config');
+const d = debug('ionizer:config');
 let config: IConfig = <any>{};
 
 try {

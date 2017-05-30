@@ -8,7 +8,7 @@ import pluginRouter from './rest/plugin';
 
 const fileUpload = require('express-fileupload');
 
-const d = debug('ionized');
+const d = debug('ionizer');
 
 const app = express();
 
