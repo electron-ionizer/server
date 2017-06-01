@@ -82,4 +82,16 @@ router.post('/:id/version', async (req, res) => {
     }
 });
 
+router.get('/:id/version/:hash/download', async (req, res) => {
+    const plugin = await driver.getPlugin(req.params.id);
+    if (!plugin) {
+        res.status(404).send();
+    }
+    const version = plugin.versions.find(v => v.version === req.params.hash);
+    if (!version) {
+        res.status(404).send();
+    }
+    store.handleDownloadRequest(version.fileIdentifier, res);
+});
+
 export default router;
