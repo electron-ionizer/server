@@ -13,7 +13,7 @@ module.exports = {
     // certificate: {
     //     publicKeyPath: '',
     //     privateKeyPath: '',
-    // }
+    // },
 
     /**
      * The data store to use when persisting plugins and versions.  Current possible values are "mongo",

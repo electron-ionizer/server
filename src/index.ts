@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
     res.error = (err) => {
-        d('An error occurred inside Ionized:', err);
+        d('An error occurred inside Ionizer:', err);
         res.status(500).send();
     };
     next();
@@ -48,6 +48,6 @@ d('Setting up server');
     d('Reading keypair settings');
     await getPublicKey();
     app.listen(port, () => {
-        d('Ionized Server started on port:', port);
+        d('Ionizer Server started on port:', port);
     });
 })();

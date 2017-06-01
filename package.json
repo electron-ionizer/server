@@ -1,7 +1,7 @@
 {
-  "name": "ionized-server",
+  "name": "ionizer-server",
   "version": "0.0.1",
-  "description": "Server for the ionized plugin manager",
+  "description": "Server for the ionizer plugin manager",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",

@@ -1,4 +1,4 @@
-# Ionized Server
+# Ionizer Server
 
 [![Build Status](https://travis-ci.org/electron-ionizer/server.svg?branch=master)](https://travis-ci.org/electron-ionizer/server)
 [![license](https://img.shields.io/github/license/electron-ionizer/server.svg?maxAge=2592000)](https://github.com/electron-ionizer/server/blob/master/LICENSE)
