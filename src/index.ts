@@ -24,14 +24,15 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/public', async (req, res) => {
+const restRouter = express();
+restRouter.get('/healthcheck', (req, res) => res.json({ alive: true }));
+restRouter.use('/plugin', pluginRouter);
+
+restRouter.get('/public', async (req, res) => {
     res.json({
         key: (await getPublicKey()).toString(),
     });
 });
-
-const restRouter = express();
-restRouter.use('/plugin', pluginRouter);
 
 app.use('/rest', restRouter);
 
