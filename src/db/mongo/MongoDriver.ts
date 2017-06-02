@@ -53,7 +53,7 @@ export default class MongoDriver implements IDBDriver {
         }
         const plugin = await this.getRawPlugin(pluginId);
         if (!plugin) {
-            throw new Error('Can\t make a version for a non-existent plugin');
+            throw new Error('Can\'t make a version for a non-existent plugin');
         }
         const newVersion: PluginVersion = {
             downloads: 0,
@@ -61,9 +61,24 @@ export default class MongoDriver implements IDBDriver {
             hash,
             publishDate: new Date(),
             version,
+            validated: false,
         };
         plugin.versions.push(newVersion);
         await plugin.save();
         return newVersion;
+    }
+
+    public async validatePluginVersion(plugin: Plugin, version: PluginVersion) {
+        const targetPlugin = await this.getRawPlugin(plugin.id);
+        if (!plugin) {
+            throw new Error('Can\'t validate a version for a non-existent plugin');
+        }
+        const targetVersion = targetPlugin.versions.find(v => v.hash === version.hash);
+        if (!targetVersion) {
+            throw new Error('Can\'t validate a version for a non-existent version');
+        }
+        targetVersion.validated = true;
+        await targetPlugin.save();
+        return targetVersion;
     }
 }

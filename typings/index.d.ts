@@ -29,6 +29,7 @@ interface IDBDriver {
     createPlugin(author: string, name: string): Promise<Plugin>;
     getPlugin(id: string): Promise<Plugin>;
     createVersion(pluginId: string, version: string, fileIdentifier: FileID, hash: string): Promise<PluginVersion>;
+    validatePluginVersion(plugin: Plugin, version: PluginVersion): Promise<PluginVersion>;
 }
 
 interface PluginVersion {
@@ -37,6 +38,7 @@ interface PluginVersion {
     hash: string;
     publishDate: Date;
     downloads: number;
+    validated: boolean;
 }
 
 interface Plugin {
