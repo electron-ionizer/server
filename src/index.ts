@@ -2,9 +2,10 @@ import * as bodyParser from 'body-parser';
 import * as debug from 'debug';
 import * as express from 'express';
 
-import { port, getPublicKey } from './config';
+import { name, port, getPublicKey } from './config';
 import driver from './db/driver';
 import pluginRouter from './rest/plugin';
+import { authenticateRouter, setupApp } from './rest/auth';
 
 const fileUpload = require('express-fileupload');
 
@@ -27,10 +28,18 @@ app.use((req, res, next) => {
 const restRouter = express();
 restRouter.get('/healthcheck', (req, res) => res.json({ alive: true }));
 restRouter.use('/plugin', pluginRouter);
+restRouter.use('/auth', authenticateRouter);
+setupApp(app);
 
 restRouter.get('/public', async (req, res) => {
     res.json({
         key: (await getPublicKey()).toString(),
+    });
+});
+restRouter.get('/config', async (req, res) => {
+    res.json({
+        app: { name },
+        user: req.user,
     });
 });
 

@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
 
 import { mongo } from '../../config';
@@ -24,13 +25,29 @@ export default class MongoDriver implements IDBDriver {
         return (<IPluginDocument[]>(await Plugin.find({}))).map(plugin => plugin.toJSON());
     }
 
-    public async createPlugin(author: string, name: string) {
+    private generateToken() {
+        return crypto.pseudoRandomBytes(48).toString('hex');
+    }
+
+    public async createPlugin(author: User, name: string, description: string) {
         await this.ensureConnected();
         const plugin = <IPluginDocument>(new Plugin());
         plugin.author = author;
         plugin.name = name;
+        plugin.description = description;
+        plugin.token = this.generateToken();
         await plugin.save();
         return plugin.toJSON();
+    }
+
+    public async resetPluginToken(pluginId: string) {
+        const plugin = await this.getRawPlugin(pluginId);
+        if (!plugin) {
+            throw new Error('Can\'t make a version for a non-existent plugin');
+        }
+        plugin.token = this.generateToken();
+        await plugin.save();
+        return plugin;
     }
 
     private async getRawPlugin(id: string) {
@@ -68,7 +85,7 @@ export default class MongoDriver implements IDBDriver {
         return newVersion;
     }
 
-    public async validatePluginVersion(plugin: Plugin, version: PluginVersion) {
+    public async validatePluginVersion(plugin: IonizerPlugin, version: PluginVersion) {
         const targetPlugin = await this.getRawPlugin(plugin.id);
         if (!plugin) {
             throw new Error('Can\'t validate a version for a non-existent plugin');

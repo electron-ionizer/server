@@ -9,6 +9,11 @@ import { getPrivateKey } from '../config';
 
 const router = express();
 
+const requireLogin = (req, res, next) => {
+    if (!req.user) return res.status(403).json({ error: 'Forbidden' });
+    next();
+};
+
 const checkField = (req: Express.Request, res: Express.Response, field: string) => {
     if (!req.body) {
         res.status(400).json({
@@ -33,18 +38,35 @@ const checkFields = (req: Express.Request, res: Express.Response, fields: string
     return true;
 };
 
+const stripTokens = <T>(plugin: T): T => {
+    let plugins: any[];
+    if (!Array.isArray(plugin)) {
+        plugins = [plugin];
+    } else {
+        plugins = plugin;
+    }
+    for (const plugin of plugins) {
+        delete (<any>plugin).token;
+    }
+    if (!Array.isArray(plugin)) {
+        return plugins[0];
+    } else {
+        return (<any>plugins);
+    }
+}
+
 router.get('/', async (req, res) => {
-    res.json(await driver.getPlugins());
+    res.json(stripTokens(await driver.getPlugins()));
 });
 
-router.post('/', async (req, res) => {
-    if (checkFields(req, res, ['author', 'name'])) {
-        res.json(await driver.createPlugin(req.body.author, req.body.name));
+router.post('/', requireLogin, async (req, res) => {
+    if (checkFields(req, res, ['author', 'name', 'description'])) {
+        res.json(stripTokens(await driver.createPlugin(req.user as User, req.body.name as string, req.body.description)));
     }
 });
 
 router.get('/:id', async (req, res) => {
-    res.json(await driver.getPlugin(req.params.id));
+    res.json(stripTokens(await driver.getPlugin(req.params.id)));
 });
 
 router.post('/:id/version', async (req, res) => {
@@ -62,9 +84,11 @@ router.post('/:id/version', async (req, res) => {
             } else {
                 const plugin = await driver.getPlugin(req.params.id);
                 if (!plugin) {
-                    res.status(400).json({
+                    res.status(404).json({
                         error: 'Can\'t create a version for a non-existant plugin',
                     })
+                } else if (!((!req.user && req.headers.Authorization === `Token ${plugin.token}`) || (req.user && plugin.author.id === (<User>req.user).id))) {
+                    res.status(403).json({ error: 'Forbidden' });
                 } else if (plugin.versions.find(tVersion => semver.gte(tVersion.version, version))) {
                     res.status(400).json({
                         error: 'Can\'t create a version that is semantically less than an existing version',
@@ -82,7 +106,35 @@ router.post('/:id/version', async (req, res) => {
     }
 });
 
-router.post('/:id/version/:hash/validate', async (req, res) => {
+router.get('/:id/token', requireLogin, async (req, res) => {
+    const plugin = await driver.getPlugin(req.params.id);
+    if (!plugin) {
+        res.status(404).json({
+            error: 'Can\'t fetch a token for a non-existant plugin',
+        });
+    } else if (plugin.author.id !== (<User>req.user).id) {
+        res.status(403).json({ error: 'Forbidden' });
+    } else {
+        res.json({ token: (await driver.resetPluginToken(req.params.id)).token });
+    }
+});
+
+router.post('/:id/token/reset', requireLogin, async (req, res) => {
+    const plugin = await driver.getPlugin(req.params.id);
+    if (!plugin) {
+        res.status(404).json({
+            error: 'Can\'t reset a token for a non-existant plugin',
+        });
+    } else if (plugin.author.id !== (<User>req.user).id) {
+        res.status(403).json({ error: 'Forbidden' });
+    } else {
+        res.json({ token: (await driver.resetPluginToken(req.params.id)).token });
+    }
+});
+
+router.post('/:id/version/:hash/validate', requireLogin, async (req, res) => {
+    if (!(<User>req.user).isAdmin) return res.status(403).json({ error: 'Forbidden '});
+
     const plugin = await driver.getPlugin(req.params.id);
     if (!plugin) {
         res.status(404).send();

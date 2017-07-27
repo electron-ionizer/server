@@ -4,8 +4,18 @@ const { Schema } = mongoose;
  
 const Plugin = new Schema({
     id: (<any>Schema).ObjectId,
-    author: String,
-    name: String,
+    author: {
+        id: String,
+        displayName: String,
+        photos: [
+            {
+                value: String,
+            }
+        ],
+        isAdmin: Boolean,
+    },
+    name: { type: String, required: true },
+    description: { type: String, default: '' },
     versions: {
         type: [
             {
@@ -19,10 +29,11 @@ const Plugin = new Schema({
         ],
         default: [],
     },
+    token: String,
 });
 
 export default mongoose.model('Plugin', Plugin);
 
 export interface IPluginVersion extends PluginVersion {}
 
-export interface IPluginDocument extends mongoose.Document, Plugin {}
+export interface IPluginDocument extends mongoose.Document, IonizerPlugin {}

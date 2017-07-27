@@ -9,12 +9,41 @@ interface MongoOptions {
     password: string;
 }
 
+
+interface GitHubOptions {
+    clientID: string;
+    clientSecret: string;
+    realm: string;
+}
+
+interface OpenIDOptions {
+    returnURL: string;
+    realm: string;
+    providerURL: string;
+    stateless: boolean;
+    profile: boolean;
+    domain: string;
+}
+
 interface IConfig {
+    name: string;
     port: number;
     certificate?: (string | CertificateObject);
     mongo: MongoOptions;
     fileStrategy: string;
     dbStrategy: string;
+    authStrategy: string;
+    github: GitHubOptions;
+    openid: OpenIDOptions;
+    secret: string;
+    adminIdentifiers: string[];
+}
+
+interface User {
+    id: string;
+    displayName: string;
+    photos?: { value: string }[],
+    isAdmin: boolean;
 }
 
 interface IErrorObject {
@@ -25,11 +54,12 @@ type FileID = string;
 
 interface IDBDriver {
     ensureConnected(): Promise<void>;
-    getPlugins(): Promise<Plugin[]>;
-    createPlugin(author: string, name: string): Promise<Plugin>;
-    getPlugin(id: string): Promise<Plugin>;
+    getPlugins(): Promise<IonizerPlugin[]>;
+    createPlugin(author: User, name: string, description: string): Promise<IonizerPlugin>;
+    resetPluginToken(pluginId: string): Promise<IonizerPlugin>;
+    getPlugin(id: string): Promise<IonizerPlugin>;
     createVersion(pluginId: string, version: string, fileIdentifier: FileID, hash: string): Promise<PluginVersion>;
-    validatePluginVersion(plugin: Plugin, version: PluginVersion): Promise<PluginVersion>;
+    validatePluginVersion(plugin: IonizerPlugin, version: PluginVersion): Promise<PluginVersion>;
 }
 
 interface PluginVersion {
@@ -41,11 +71,13 @@ interface PluginVersion {
     validated: boolean;
 }
 
-interface Plugin {
+interface IonizerPlugin {
     id: string;
-    author: string;
+    author: User;
     name: string;
+    description: string;
     versions: PluginVersion[];
+    token?: string;
 }
 
 interface IFileStore {

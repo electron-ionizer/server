@@ -5,15 +5,14 @@
 		"outDir": "lib",
 		"lib": [
 			"es6",
-			"dom"
+            "dom"
 		],
 		"sourceMap": true,
-		"rootDir": "src",
+		"rootDir": "public",
 		"jsx": "react",
 		"experimentalDecorators": true
 	},
 	"exclude": [
-		"node_modules",
-		"public"
+		"node_modules"
 	]
 }
