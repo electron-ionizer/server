@@ -155,6 +155,9 @@ router.get('/:id/version/:hash/download', async (req, res) => {
     if (!version) {
         res.status(404).send();
     }
+    if (!version.validated) {
+        res.status(404).send();
+    }
     store.handleDownloadRequest(version.fileIdentifier, res);
 });
 
