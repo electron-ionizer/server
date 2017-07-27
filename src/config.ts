@@ -18,6 +18,12 @@ export const port = config.port;
 export const mongo: MongoOptions = <any>(config.mongo || {});
 export const fileStrategy = config.fileStrategy;
 export const dbStrategy = config.dbStrategy;
+export const name = config.name;
+export const github: GitHubOptions = config.github || <any>{};
+export const openid: OpenIDOptions = config.openid || <any>{};
+export const secret = config.secret;
+export const adminIdentifiers = config.adminIdentifiers || [];
+export const authStrategy = config.authStrategy;
 
 const getCertificates = async () => {
     if (!config.certificate) {
